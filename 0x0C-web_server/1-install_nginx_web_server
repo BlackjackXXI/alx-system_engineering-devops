@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# a script that installs nginx for a server.
+# installation of nginx:
+apt-get -y update
+apt-get -y install nginx
+if [[ ! $(pgrep nginx) ]]; then
+    service nginx start
+fi
+root_dir=$(grep "root" /etc/nginx/sites-available/default | cut -d " " -f 2 | tr -d ";" | head -1)
+if [[ ! -d $root_dir ]]; then
+    sudo mkdir -p "$root_dir"
+fi
+echo "Hello World!" > "$root_dir"/index.html
+response=$(curl -s http://localhost)
+if [[ $response == "Hello World!" ]]; then
+  echo "Nginx installation and configuration successful!"
+else
+  echo "Nginx installation or configuration failed."
+  exit 1
+fi
+
+exit 0
