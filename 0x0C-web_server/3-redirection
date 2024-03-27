@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# installing nginx on a server
+
+# nginx installation
+apt-get -y update
+apt-get -y install nginx
+
+# nginx start
+if [[ ! $(pgrep nginx) ]]; then
+    service nginx start
+fi
+# Nginx firewall exception
+# user ownership
+chown -R "$USER":"$USER" /var/www/html
+chmod -R 755 /var/www
+# root directory configuration file
+root_dir=$(grep "root" /etc/nginx/sites-available/default | cut -d " " -f 2 | tr -d ";" | head -1)
+# directory creation
+if [[ ! -d $root_dir ]]; then
+    sudo mkdir -p "$root_dir"
+fi
+# index.html
+echo "Hello World!" > "$root_dir"/index.html
+# running check
+response=$(curl -s http://localhost)
+if [[ $response == "Hello World!" ]]; then
+  echo "Nginx installation and configuration successful!"
+else
+  echo "Nginx installation or configuration failed."
+  exit 1
+fi
+
+# Configure Nginx
+sudo sed -i "/listen 80 default_server;/a rewrite ^/redirect_me https://linkedin.com/in/achrafelkhnissi/ permanent;" /etc/nginx/sites-available/default
+
+# configuration validation
+if nginx -t | grep "successful"; then
+  echo "Nginx configuration failed."
+  exit 1
+fi
+
+# Reload
+nginx -s reload
+
+# Restart Nginx
+service nginx restart
+
+# redirecting to the expected page
+
+exit 0
