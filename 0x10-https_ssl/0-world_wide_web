@@ -1,21 +1,17 @@
 #!/usr/bin/env bash
 # script to show DNS records type and IP adress sub domains
 
-print_rec ()
+displaySubInfo ()
 {
-    printf "The subdomain %s is a " "$2"
-    dig "$2.$1" | grep -A1 'ANSWER SECTION:' | awk -F' ' '{ printf $4 }'
-    
-    printf " record and points to "
-    dig "$2.$1" | grep -A1 'ANSWER SECTION:' | awk -F' ' '{ printf $5 }'
-    echo ""
+    digExtract=$(dig "$2"."$1" | grep -A1 'ANSWER SECTION:' | tr '\t' '\n' | tr '\n' ' ')
+    echo "$2 $digExtract" | awk '{print "The subdomain " $1 " is a " $8 " record and points to " $9}'
 }
-if [ -z "$2" ]; then
-   for subs in "www" "lb-01" "web-01" "web-02"
-   do
-       
-       print_rec "$1" "$subs"
-   done
+
+if [ "$#" -eq 1 ]; then
+    for subdomain in "www" "lb-01" "web-01" "web-02"
+    do
+	displaySubInfo "$1" "$subdomain"
+    done
 else
-    print_rec "$1" "$2"
+    displaySubInfo "$1" "$2"
 fi
