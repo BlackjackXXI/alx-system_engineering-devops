@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Nginx installation from listening on port 80
+
+apt-get update
+apt-get -y install curl
+sudo sed -i "s/sites-enabled/sites-available/" /etc/nginx/nginx.conf
+sudo service nginx restart
