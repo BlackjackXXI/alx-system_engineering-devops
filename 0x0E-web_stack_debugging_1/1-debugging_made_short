@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
 
-#coööent for task
-ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
-service nginx start
-kill "$(pgrep 'nginx' | head -1)"
+#fix short and sweet.
+sudo python3 -m http.server --directory /usr/share/nginx/html 80 > /dev/null 2>&1 &
