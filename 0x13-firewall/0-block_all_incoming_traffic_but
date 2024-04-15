@@ -1,15 +1,23 @@
-#!/usr/bin/env bash
+echo -e "Updating\n"
 
-#installation
-sudo apt-get -y install ufw
-sudo sed -i "s/IPV6=no/IPV6=yes/" /etc/default/ufw
-sudo ufw default allow outgoing
+sudo apt-get update
+
+echo -e "Installing UFW\n"
+
+sudo apt-get install -y ufw
+
+echo -e "configuring UFW...\n"
+
+# Allow Outgoing and Deny Incoming
 sudo ufw default deny incoming
+sudo ufw default allow outgoing
 
-#configuration
-sudo ufw allow ssh
-sudo ufw allow http
-sudo ufw allow https
+# Allow ports
+sudo ufw allow 22
+sudo ufw allow 80
+sudo ufw allow 443
 
-# start
+# Enable Fire Wall
 sudo ufw enable
+
+echo -e "Process Completed.\n"
