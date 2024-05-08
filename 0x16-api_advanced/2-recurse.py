@@ -3,10 +3,13 @@
 Script that returns top 10 hot posts of a subreddit
 """
 import requests
-"""Script that returns top 10 hot posts of a subreddit"""
 def recurse(subreddit, hot_list=[], after="tmp"):
+    """
+        return all hot articles for a given subreddit
+    """
     headers = requests.utils.default_headers()
     headers.update({'User-Agent': 'My User Agent 1.0'})
+
     url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
     if after != "tmp":
         url = url + "?after={}".format(after)
