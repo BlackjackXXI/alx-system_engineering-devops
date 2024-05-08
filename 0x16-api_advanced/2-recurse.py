@@ -22,4 +22,4 @@ def recurse(subreddit, hot_list=[], after="tmp"):
     after = r.json().get('data').get('after')
     if not after:
         return hot_list
-    return recurse(subreddit, hot_list, after)
+    return (recurse(subreddit, hot_list, after))
