@@ -7,7 +7,6 @@ import requests
 def recurse(subreddit, hot_list=[], after="tmp"):
     headers = requests.utils.default_headers()
     headers.update({'User-Agent': 'My User Agent 1.0'})
-
     url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
     if after != "tmp":
         url = url + "?after={}".format(after)
