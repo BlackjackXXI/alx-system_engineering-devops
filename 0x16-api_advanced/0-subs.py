@@ -1,22 +1,24 @@
 #!/usr/bin/python3
-"""
-API of number of subscribers of a subreddit
-"""
-
+    """
+    subreddit (str): The name of the subreddit.
+    """
 import requests
 
+
 def number_of_subscribers(subreddit):
+    """
+    return number of subscribers
+    """
     url = f"https://www.reddit.com/r/{}/about.json"
-    headers = {"User-Agent": "Mozilla/5.0"}  # Set a custom User-Agent to avoid errors
-    response = requests.get(url, headers=headers)
-    
-    if response.status_code == 200:
-        data = response.json()
-        return data['data']['subscribers']
-    else:
+    headers = requests.utils.default_headers()
+    headers.update({'User-Agent': 'My User Agent 1.0'})
+    response = requests.get(url, headers=headers).json()
+    subscribers = response.get('data', {}).get('subscribers')
+    if not subscribers:
         return 0
 
-# Example usage:
+    return subscribers
+
 if __name__ == '__main__':
     import sys
     if len(sys.argv) < 2:
