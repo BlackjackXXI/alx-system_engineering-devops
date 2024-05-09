@@ -1,25 +1,36 @@
 #!/usr/bin/python3
 """
-top ten posts sybreddit count
+dfhjksadvfjkghdfvkjhgdfv
 """
 import requests
 
 
 def top_ten(subreddit):
-    """
-        fetch subbreddit top ten
-        gives anone if invalide query
-    """
-    # get user agent
-    # https://stackoverflow.com/questions/10606133/ -->
-    # sending-user-agent-using-requests-library-in-python
-    headers = requests.utils.default_headers()
-    headers.update({'User-Agent': 'My User Agent 1.0'})
 
-    url = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
-    r = requests.get(url, headers=headers).json()
-    top_ten = r.get('data', {}).get('children', [])
-    if not top_ten:
-        print(None)
-    for t in top_ten:
-        print(t.get('data').get('title'))
+
+    """
+    Return top ten titles for a given subreddit
+    Return None if invalid subreddit given
+    """
+    # Set user agent
+    headers = {'User-Agent': 'My User Agent 1.0'}
+
+    url = f"https://www.reddit.com/r/{subreddit}/hot.json?limit=10"
+    response = requests.get(url, headers=headers)
+
+    if response.status_code != 200:
+        print("Error: Failed to fetch data from Reddit API.")
+        return None
+    
+    data = response.json()
+    top_posts = data.get('data', {}).get('children', [])
+    
+    if not top_posts:
+        print("No posts found.")
+        return None
+
+    for post in top_posts:
+        print(post.get('data').get('title'))
+
+# Example usage:
+top_ten("python")
