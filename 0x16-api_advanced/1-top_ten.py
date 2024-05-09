@@ -3,15 +3,16 @@
 dfhjksadvfjkghdfvkjhgdfv
 """
 import requests
-import sys
+
 
 def top_ten(subreddit):
     """
     Return top ten titles for a given subreddit.
     Return None if invalid subreddit given.
     """
-    # PEP8: Adding two blank lines before function definition
     # get user agent
+    # https://stackoverflow.com/questions/10606133/ -->
+    # sending-user-agent-using-requests-library-in-python
     headers = requests.utils.default_headers()
     headers.update({'User-Agent': 'My User Agent 1.0'})
 
