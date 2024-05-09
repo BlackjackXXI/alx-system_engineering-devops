@@ -25,11 +25,13 @@ def top_ten(subreddit):
             for post in top_posts:
                 print(post['data']['title'])
         else:
-            print("Subreddit not found or no posts available.")
-    except requests.exceptions.HTTPError as err:
+            print("No posts found for the subreddit:", subreddit)
+    except requests.HTTPError as err:
         print("HTTP error occurred:", err)
-    except requests.exceptions.RequestException as e:
+    except requests.RequestException as e:
         print("Error connecting to Reddit API:", e)
+    except ValueError:
+        print("Invalid JSON response from Reddit API.")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
