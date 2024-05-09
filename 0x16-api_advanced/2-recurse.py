@@ -5,32 +5,46 @@ Query Reddit API recursively for all hot articles of a given subreddit
 import requests
 
 
-def recurse(subreddit, hot_list=[], after="tmp"):
+def recurse(subreddit, hot_list=[], after=None):
     """
-        return all hot articles for a given subreddit
-        return None if invalid subreddit given
+    Return all hot articles for a given subreddit recursively.
+    Return None if an invalid subreddit is given.
     """
-    # get user agent
-    # https://stackoverflow.com/questions/10606133/ -->
-    # sending-user-agent-using-requests-library-in-python
+    # Set up the user agent
     headers = requests.utils.default_headers()
     headers.update({'User-Agent': 'My User Agent 1.0'})
 
-    # update url each recursive call with param "after"
-    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
-    if after != "tmp":
-        url = url + "?after={}".format(after)
+    # Update the URL for each recursive call with the 'after' parameter
+    url = f"https://www.reddit.com/r/{subreddit}/hot.json"
+    if after:
+        url += f"?after={after}"
+
+    # Make the request to Reddit API
     r = requests.get(url, headers=headers, allow_redirects=False)
 
-    # append top titles to hot_list
-    results = r.json().get('data', {}).get('children', [])
-    if not results:
-        return hot_list
-    for e in results:
-        hot_list.append(e.get('data').get('title'))
+    # Check if the request was successful
+    if r.status_code != 200:
+        print(f"Error: Unable to retrieve data for subreddit '{subreddit}'")
+        return None
 
-    # get next param "after" else nothing else to recurse
-    after = r.json().get('data').get('after')
-    if not after:
+    # Extract data from the response
+    data = r.json().get('data', {})
+    children = data.get('children', [])
+
+    # Append titles to hot_list
+    for child in children:
+        hot_list.append(child.get('data', {}).get('title'))
+
+    # Get the 'after' parameter for the next page of results
+    after = data.get('after')
+
+    # Recurse if 'after' parameter exists, otherwise return the hot_list
+    if after:
+        return recurse(subreddit, hot_list, after)
+    else:
         return hot_list
-    return (recurse(subreddit, hot_list, after))
+
+# Example usage:
+# hot_articles = recurse("python")
+
+# Uncomment the line above and replace "python" with your desired subreddit to test the function.
