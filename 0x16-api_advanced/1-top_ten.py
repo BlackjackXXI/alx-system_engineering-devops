@@ -3,34 +3,36 @@
 dfhjksadvfjkghdfvkjhgdfv
 """
 import requests
-
+import sys
 
 def top_ten(subreddit):
-
-
     """
-    Return top ten titles for a given subreddit
-    Return None if invalid subreddit given
+    Return top ten titles for a given subreddit.
+    Return None if invalid subreddit given.
     """
-    # Set user agent
-    headers = {'User-Agent': 'My User Agent 1.0'}
+    # PEP8: Adding two blank lines before function definition
+    # get user agent
+    headers = requests.utils.default_headers()
+    headers.update({'User-Agent': 'My User Agent 1.0'})
 
-    url = f"https://www.reddit.com/r/{subreddit}/hot.json?limit=10"
-    response = requests.get(url, headers=headers)
+    url = "https://www.reddit.com/r/{}/hot.json?limit=10".format(subreddit)
+    try:
+        r = requests.get(url, headers=headers)
+        r.raise_for_status()  # Raise an exception for HTTP errors
+        data = r.json()
+        if 'data' in data and 'children' in data['data']:
+            top_posts = data['data']['children']
+            for post in top_posts:
+                print(post['data']['title'])
+        else:
+            print("Subreddit not found or no posts available.")
+    except requests.exceptions.HTTPError as err:
+        print("HTTP error occurred:", err)
+    except requests.exceptions.RequestException as e:
+        print("Error connecting to Reddit API:", e)
 
-    if response.status_code != 200:
-        print("Error: Failed to fetch data from Reddit API.")
-        return None
-    
-    data = response.json()
-    top_posts = data.get('data', {}).get('children', [])
-    
-    if not top_posts:
-        print("No posts found.")
-        return None
-
-    for post in top_posts:
-        print(post.get('data').get('title'))
-
-# Example usage:
-top_ten("python")
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python script.py <subreddit>")
+    else:
+        top_ten(sys.argv[1])
