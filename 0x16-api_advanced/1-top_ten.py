@@ -1,11 +1,13 @@
 #!/usr/bin/python3
 """
-fetch sbredddit sub
+top ten posts sybreddit count
 """
 import requests
+
+
 def top_ten(subreddit):
     """
-        f3etch subbreddit top ten
+        fetch subbreddit top ten
         gives anone if invalide query
     """
     # get user agent
